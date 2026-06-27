@@ -126,6 +126,8 @@ export interface ShoppingItem {
   manual: boolean;
 }
 
+export type ThemePreference = "light" | "dark" | "system";
+
 export interface Settings {
   units: "us" | "metric";
   weekdayMaxCookMinutes: number;
@@ -134,6 +136,7 @@ export interface Settings {
   defaultPortions: number;
   subtractPantry: boolean;
   name: string;
+  theme: ThemePreference;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -144,4 +147,5 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultPortions: 2,
   subtractPantry: true,
   name: "",
+  theme: "system",
 };

@@ -2,36 +2,36 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
+  darkMode: ["selector", '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
-        // "Ready room" palette — disciplined, warm, not the cream/serif/terracotta default
         ink: {
-          DEFAULT: "#102A2C", // deep teal-ink, primary text & nav
-          soft: "#2C4A4C",
-          faint: "#6A8385",
+          DEFAULT: "rgb(var(--ink) / <alpha-value>)",
+          soft: "rgb(var(--ink-soft) / <alpha-value>)",
+          faint: "rgb(var(--ink-faint) / <alpha-value>)",
         },
         surface: {
-          DEFAULT: "#F7F5EF", // warm paper, used as a utility surface (paired with teal, not serif)
-          raised: "#FFFFFF",
-          sunk: "#EFEBE1",
+          DEFAULT: "rgb(var(--surface) / <alpha-value>)",
+          raised: "rgb(var(--surface-raised) / <alpha-value>)",
+          sunk: "rgb(var(--surface-sunk) / <alpha-value>)",
         },
         amber: {
-          DEFAULT: "#E2922B", // action + training-day flight-ops marker
-          soft: "#F6E3C2",
-          ink: "#7A4D10",
+          DEFAULT: "rgb(var(--amber) / <alpha-value>)",
+          soft: "rgb(var(--amber-soft) / <alpha-value>)",
+          ink: "rgb(var(--amber-ink) / <alpha-value>)",
         },
         moss: {
-          DEFAULT: "#2F8F66", // ready / done / in-pantry
-          soft: "#D6EADD",
-          ink: "#16523A",
+          DEFAULT: "rgb(var(--moss) / <alpha-value>)",
+          soft: "rgb(var(--moss-soft) / <alpha-value>)",
+          ink: "rgb(var(--moss-ink) / <alpha-value>)",
         },
         coral: {
-          DEFAULT: "#CF5740", // alerts / expiring / missing
-          soft: "#F6D9D1",
-          ink: "#7A2B1C",
+          DEFAULT: "rgb(var(--coral) / <alpha-value>)",
+          soft: "rgb(var(--coral-soft) / <alpha-value>)",
+          ink: "rgb(var(--coral-ink) / <alpha-value>)",
         },
-        line: "#DDD6C7",
+        line: "rgb(var(--line) / <alpha-value>)",
       },
       fontFamily: {
         display: ["var(--font-display)", "system-ui", "sans-serif"],
@@ -43,8 +43,8 @@ const config: Config = {
         "2xl": "20px",
       },
       boxShadow: {
-        card: "0 1px 2px rgba(16,42,44,0.06), 0 8px 24px -16px rgba(16,42,44,0.25)",
-        nav: "0 -1px 0 rgba(16,42,44,0.08)",
+        card: "var(--shadow-card)",
+        nav: "var(--shadow-nav)",
       },
     },
   },

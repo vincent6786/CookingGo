@@ -3,6 +3,11 @@ import localFont from "next/font/local";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import ThemeApplier from "@/components/ThemeApplier";
+
+// Runs before React hydrates so the page paints with the correct palette
+// — avoids a one-frame light-mode flash for users who picked dark.
+const themeBootScript = `(function(){try{var raw=localStorage.getItem('cooking-routine-store-v1');var t=raw?(JSON.parse(raw).state||{}).settings?.theme:undefined;t=t||'system';var dark=t==='dark'||(t==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();`;
 
 // Fonts are self-hosted (variable woff2) so the app builds and runs fully
 // offline — no Google Fonts fetch at build time or runtime.
@@ -56,7 +61,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+      </head>
       <body className="font-sans antialiased">
+        <ThemeApplier />
         <ServiceWorkerRegister />
         <main className="mx-auto w-full max-w-2xl px-4 pt-5 lg:max-w-4xl">
           {children}

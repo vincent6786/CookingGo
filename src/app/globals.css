@@ -2,26 +2,86 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Color tokens are stored as raw RGB channels so Tailwind's opacity
+   modifiers (e.g. ring-amber/30, bg-ink/50) keep working. Consume them
+   via rgb(var(--ink) / <alpha-value>) — wired up in tailwind.config.ts. */
 :root {
+  --ink: 16 42 44;
+  --ink-soft: 44 74 76;
+  --ink-faint: 106 131 133;
+
+  --surface: 247 245 239;
+  --surface-raised: 255 255 255;
+  --surface-sunk: 239 235 225;
+
+  --amber: 226 146 43;
+  --amber-soft: 246 227 194;
+  --amber-ink: 122 77 16;
+
+  --moss: 47 143 102;
+  --moss-soft: 214 234 221;
+  --moss-ink: 22 82 58;
+
+  --coral: 207 87 64;
+  --coral-soft: 246 217 209;
+  --coral-ink: 122 43 28;
+
+  --line: 221 214 199;
+
+  --bg-page: #efebe1;
+
+  --shadow-card: 0 1px 2px rgba(16, 42, 44, 0.06),
+    0 8px 24px -16px rgba(16, 42, 44, 0.25);
+  --shadow-nav: 0 -1px 0 rgba(16, 42, 44, 0.08);
+
   color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --ink: 236 230 212;
+  --ink-soft: 200 194 176;
+  --ink-faint: 143 160 161;
+
+  --surface: 14 30 32;
+  --surface-raised: 22 43 45;
+  --surface-sunk: 9 24 25;
+
+  --amber: 226 146 43;
+  --amber-soft: 58 45 20;
+  --amber-ink: 242 198 133;
+
+  --moss: 58 167 121;
+  --moss-soft: 19 53 42;
+  --moss-ink: 157 217 184;
+
+  --coral: 224 106 82;
+  --coral-soft: 58 32 26;
+  --coral-ink: 240 180 165;
+
+  --line: 39 57 59;
+
+  --bg-page: #091819;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4),
+    0 8px 24px -16px rgba(0, 0, 0, 0.6);
+  --shadow-nav: 0 -1px 0 rgba(0, 0, 0, 0.5);
+
+  color-scheme: dark;
 }
 
 html,
 body {
-  background: #efebe1;
-  color: #102a2c;
+  background: var(--bg-page);
+  color: rgb(var(--ink));
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 body {
-  /* leave room for the fixed bottom nav + iOS home indicator */
   padding-bottom: calc(72px + env(safe-area-inset-bottom));
 }
 
 @layer components {
-  /* Instrument readout — the signature treatment for any number that matters:
-     quantities, times, portions, timers. Monospace, tracked, slightly raised. */
   .readout {
     @apply font-mono tabular-nums tracking-tight;
   }
@@ -67,7 +127,6 @@ body {
   }
 }
 
-/* Honor reduced-motion across the app */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;
@@ -75,7 +134,6 @@ body {
   }
 }
 
-/* Hide number input spinners for the readout aesthetic */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;

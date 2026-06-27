@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { RotateCcw, AlertTriangle } from "lucide-react";
+import { RotateCcw, AlertTriangle, Sun, Moon, Monitor } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { ClientGate } from "@/components/ClientGate";
 import { PageHeader, Stepper } from "@/components/ui";
@@ -58,6 +58,36 @@ function SettingsScreen() {
             <p className="mt-1.5 text-xs text-ink-faint">
               Used for the greeting on your Today screen.
             </p>
+          </div>
+        </Section>
+
+        {/* Appearance */}
+        <Section title="Appearance">
+          <div className="grid grid-cols-3 gap-1 rounded-xl border border-line bg-surface-raised p-1">
+            {(
+              [
+                { value: "light", label: "Light", Icon: Sun },
+                { value: "system", label: "System", Icon: Monitor },
+                { value: "dark", label: "Dark", Icon: Moon },
+              ] as const
+            ).map(({ value, label, Icon }) => {
+              const active = (settings.theme ?? "system") === value;
+              return (
+                <button
+                  key={value}
+                  onClick={() => updateSettings({ theme: value })}
+                  className={clsx(
+                    "flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-semibold transition-colors",
+                    active
+                      ? "bg-amber text-white shadow-sm"
+                      : "text-ink-soft hover:bg-surface-sunk"
+                  )}
+                >
+                  <Icon size={16} />
+                  {label}
+                </button>
+              );
+            })}
           </div>
         </Section>
 
