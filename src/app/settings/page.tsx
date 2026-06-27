@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RotateCcw, AlertTriangle, Sun, Moon, Monitor } from "lucide-react";
+import { RotateCcw, AlertTriangle, Sun, Moon, Monitor, LogOut } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { ClientGate } from "@/components/ClientGate";
 import { PageHeader, Stepper } from "@/components/ui";
+import { supabase } from "@/lib/supabase";
 import clsx from "clsx";
 
 const WEEKDAYS = [
@@ -45,6 +46,10 @@ function SettingsScreen() {
       <PageHeader eyebrow="Setup" title="Settings" />
 
       <div className="space-y-5">
+        <Section title="Account">
+          <AccountRow />
+        </Section>
+
         {/* Profile */}
         <Section title="You">
           <div>
@@ -186,8 +191,8 @@ function SettingsScreen() {
         {/* Data */}
         <Section title="Data">
           <p className="text-xs text-ink-faint">
-            Everything lives on this device, in this browser. Nothing is sent to a
-            server. Add the app to your Home Screen to keep it one tap away.
+            Your plan, recipes, and pantry sync across devices via your Galley
+            account. Add the app to your Home Screen to keep it one tap away.
           </p>
 
           <StorageUsage />
@@ -231,6 +236,31 @@ function SettingsScreen() {
           Galley · a local-first cooking routine
         </p>
       </div>
+    </div>
+  );
+}
+
+function AccountRow() {
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase()
+      .auth.getUser()
+      .then(({ data }) => setEmail(data.user?.email ?? null));
+  }, []);
+
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-ink-soft">Signed in</p>
+        <p className="truncate text-xs text-ink-faint">{email ?? "…"}</p>
+      </div>
+      <button
+        className="btn-quiet !min-h-0 gap-1.5 !px-3 !py-1.5 text-sm"
+        onClick={() => supabase().auth.signOut()}
+      >
+        <LogOut size={15} /> Sign out
+      </button>
     </div>
   );
 }
