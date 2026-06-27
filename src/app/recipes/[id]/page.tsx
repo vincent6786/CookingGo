@@ -13,6 +13,8 @@ import {
   Snowflake,
   Archive,
   CalendarPlus,
+  Share2,
+  Check,
 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { ClientGate } from "@/components/ClientGate";
@@ -20,6 +22,7 @@ import { Stepper } from "@/components/ui";
 import MealSheet from "@/components/MealSheet";
 import { scaleQuantity, fmtQty, fmtUnit } from "@/lib/units";
 import { todayISO } from "@/lib/dates";
+import { recipeToShareText, shareText } from "@/lib/share";
 
 export default function RecipeDetailPage() {
   return (
@@ -41,6 +44,22 @@ function Detail() {
   const [servings, setServings] = useState(recipe?.servings ?? 2);
   const [showAdd, setShowAdd] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [shareStatus, setShareStatus] = useState<null | "copied" | "failed">(
+    null
+  );
+
+  async function onShare() {
+    if (!recipe) return;
+    const text = recipeToShareText(recipe, servings);
+    const outcome = await shareText(recipe.name, text);
+    if (outcome === "copied") {
+      setShareStatus("copied");
+      setTimeout(() => setShareStatus(null), 2000);
+    } else if (outcome === "failed") {
+      setShareStatus("failed");
+      setTimeout(() => setShareStatus(null), 2500);
+    }
+  }
 
   const factorIngredients = useMemo(() => {
     if (!recipe) return [];
@@ -67,7 +86,31 @@ function Detail() {
         <Link href="/recipes" className="btn-quiet !min-h-0 gap-1 !px-2 !py-1.5 text-sm">
           <ChevronLeft size={18} /> Recipes
         </Link>
-        <div className="flex gap-1">
+        <div className="flex items-center gap-1">
+          {shareStatus && (
+            <span
+              className={
+                "readout mr-1 text-xs " +
+                (shareStatus === "copied" ? "text-moss-ink" : "text-coral-ink")
+              }
+              role="status"
+            >
+              {shareStatus === "copied" ? (
+                <span className="inline-flex items-center gap-1">
+                  <Check size={14} /> Copied
+                </span>
+              ) : (
+                "Share unavailable"
+              )}
+            </span>
+          )}
+          <button
+            className="btn-quiet !min-h-0 !p-2"
+            aria-label="Share"
+            onClick={onShare}
+          >
+            <Share2 size={18} />
+          </button>
           <Link
             href={`/recipes/${id}/edit`}
             className="btn-quiet !min-h-0 !p-2"

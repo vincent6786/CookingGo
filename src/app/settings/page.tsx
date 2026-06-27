@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RotateCcw, AlertTriangle, Sun, Moon, Monitor } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { ClientGate } from "@/components/ClientGate";
@@ -189,6 +189,9 @@ function SettingsScreen() {
             Everything lives on this device, in this browser. Nothing is sent to a
             server. Add the app to your Home Screen to keep it one tap away.
           </p>
+
+          <StorageUsage />
+
           {!confirmReset ? (
             <button
               className="btn-quiet mt-1 w-full !justify-start gap-2 text-coral"
@@ -265,6 +268,53 @@ function Row({
       <div className="shrink-0">{children}</div>
     </div>
   );
+}
+
+function StorageUsage() {
+  const [estimate, setEstimate] = useState<{
+    usage?: number;
+    quota?: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!navigator.storage?.estimate) return;
+    navigator.storage.estimate().then((e) => setEstimate(e));
+  }, []);
+
+  if (!estimate) return null;
+
+  const usedMB = (estimate.usage ?? 0) / (1024 * 1024);
+  const quotaMB = estimate.quota ? estimate.quota / (1024 * 1024) : undefined;
+  const pct =
+    quotaMB && quotaMB > 0
+      ? Math.min(100, Math.round((usedMB / quotaMB) * 100))
+      : null;
+
+  return (
+    <div>
+      <div className="mb-1 flex items-baseline justify-between">
+        <p className="text-sm font-medium text-ink-soft">Storage used</p>
+        <p className="readout text-xs text-ink-faint">
+          {usedMB < 0.1 ? "<0.1" : usedMB.toFixed(1)} MB
+          {quotaMB ? ` / ${formatQuota(quotaMB)}` : ""}
+        </p>
+      </div>
+      {pct !== null && (
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-sunk">
+          <div
+            className="h-full bg-moss"
+            style={{ width: `${Math.max(2, pct)}%` }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function formatQuota(mb: number): string {
+  if (mb >= 1024) return `${(mb / 1024).toFixed(1)} GB`;
+  if (mb >= 100) return `${Math.round(mb)} MB`;
+  return `${mb.toFixed(1)} MB`;
 }
 
 function Toggle({
