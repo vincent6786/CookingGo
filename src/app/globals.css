@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: #efebe1;
+  color: #102a2c;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  /* leave room for the fixed bottom nav + iOS home indicator */
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
+@layer components {
+  /* Instrument readout — the signature treatment for any number that matters:
+     quantities, times, portions, timers. Monospace, tracked, slightly raised. */
+  .readout {
+    @apply font-mono tabular-nums tracking-tight;
+  }
+
+  .card {
+    @apply rounded-2xl bg-surface-raised shadow-card border border-line;
+  }
+
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5
+      font-medium transition-colors active:scale-[0.99] select-none
+      min-h-[44px];
+  }
+  .btn-primary {
+    @apply btn bg-ink text-surface hover:bg-ink-soft;
+  }
+  .btn-amber {
+    @apply btn bg-amber text-white hover:brightness-95;
+  }
+  .btn-ghost {
+    @apply btn bg-surface-sunk text-ink hover:bg-line;
+  }
+  .btn-quiet {
+    @apply btn bg-transparent text-ink-faint hover:text-ink hover:bg-surface-sunk;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line
+      bg-surface px-2.5 py-1 text-xs font-medium text-ink-soft;
+  }
+
+  .field-label {
+    @apply block text-sm font-medium text-ink-soft mb-1.5;
+  }
+  .field {
+    @apply w-full rounded-xl border border-line bg-surface-raised px-3.5 py-2.5
+      text-ink outline-none focus:border-ink-faint focus:ring-2 focus:ring-amber/30
+      min-h-[44px];
+  }
+}
+
+/* Honor reduced-motion across the app */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Hide number input spinners for the readout aesthetic */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
