@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import ThemeApplier from "@/components/ThemeApplier";
+import AuthGate from "@/components/AuthGate";
 
 // Runs before React hydrates so the page paints with the correct palette
 // — avoids a one-frame light-mode flash for users who picked dark.
@@ -67,10 +67,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <ThemeApplier />
         <ServiceWorkerRegister />
-        <main className="mx-auto w-full max-w-2xl px-4 pt-5 lg:max-w-4xl">
-          {children}
-        </main>
-        <BottomNav />
+        <AuthGate>{children}</AuthGate>
       </body>
     </html>
   );

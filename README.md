@@ -4,8 +4,9 @@ A weekly meal planner, recipe book, and auto-built grocery list for people who w
 to **decide less and cook more**. Plan your week, adjust servings, cook a little
 extra for leftovers, and let the shopping list build itself.
 
-Everything runs on your device — no accounts, no backend, no API keys. It installs
-to your Home Screen and works offline.
+Your plan, recipes, and pantry sync across devices via a Supabase-backed account
+(email magic-link sign-in — no passwords). The app installs to your Home Screen
+and the UI is fully client-rendered.
 
 ## What it does
 
@@ -29,62 +30,46 @@ to your Home Screen and works offline.
 ## Tech
 
 Next.js 14 (App Router) · React 18 · TypeScript · Tailwind CSS · Zustand (with
-`persist` → `localStorage`). Hand-rolled service worker + web manifest for offline
-/ installable PWA behavior. Fonts are self-hosted, so there are no external requests
-at build or runtime.
+`persist` → Supabase JSONB). Supabase Auth (magic link) + Postgres with Row-Level
+Security. Hand-rolled service worker + web manifest for installable PWA behavior.
+Fonts are self-hosted.
+
+## Set up Supabase (one-time)
+
+1. Create a project at <https://supabase.com> (free tier is plenty).
+2. **SQL Editor → New Query** → paste `supabase/migrations/0001_user_state.sql`
+   from this repo → **Run**. That creates the `user_state` table and its
+   Row-Level-Security policies.
+3. **Authentication → URL Configuration**: add your deployment origin to the
+   Redirect URLs allowlist (e.g. `https://cooking-go.vercel.app/` and
+   `http://localhost:3000/` for local dev).
+4. **Settings → API**: copy **Project URL** and the **anon / public** key.
 
 ## Run it locally
 
 ```bash
+cp .env.example .env.local
+# Paste the Project URL and anon key into .env.local
+
 npm install
 npm run dev
 # open http://localhost:3000
 ```
 
-Build a production bundle:
-
-```bash
-npm run build
-npm run start
-```
-
 ## Deploy: GitHub → Vercel
 
-There are **no environment variables** to configure. Push the repo and connect it.
-
-### 1. Push to GitHub
-
-```bash
-git init
-git add .
-git commit -m "Galley: local-first cooking routine PWA"
-git branch -M main
-git remote add origin https://github.com/<your-username>/<your-repo>.git
-git push -u origin main
-```
-
-### 2. Deploy on Vercel
-
-1. Go to <https://vercel.com/new>.
-2. Import the GitHub repo you just pushed.
-3. Vercel auto-detects Next.js — leave every setting at its default and click
-   **Deploy**.
-4. When it finishes you'll get a live URL. Open it on your phone and use the
-   browser's **Add to Home Screen** to install it as an app.
-
-That's it. Each `git push` to `main` redeploys automatically.
+1. Push the repo to GitHub.
+2. <https://vercel.com/new> → import the repo. Framework Preset: **Next.js**.
+3. **Environment Variables**: add `NEXT_PUBLIC_SUPABASE_URL` and
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Production, Preview, and Development.
+4. **Deploy**. Each push to `main` redeploys automatically.
 
 ## Your data
 
-All data lives in this browser's `localStorage` under the key
-`cooking-routine-store-v1`. It never leaves your device. Clearing site data, or the
-**Reset all data** button in Settings, restores the starter recipes and an empty
-plan.
-
-> Because data is per-device, your phone and laptop won't see each other's plans.
-> If you later want them in sync, the data layer is isolated in
-> `src/lib/store.ts` — swapping the `persist` storage for a small cloud backend
-> (e.g. Supabase) is a clean, self-contained next step that won't touch the UI.
+Your plan, recipes, pantry, and settings live in a single JSONB blob in your
+Supabase `user_state` row. Row-Level Security means nobody but you (and
+Postgres-level admins on your Supabase project) can read it. Sign out clears the
+session locally; your data stays in the cloud and is restored on next sign-in.
 
 ## Project layout
 

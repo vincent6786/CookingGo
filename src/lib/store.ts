@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import {
   DEFAULT_SETTINGS,
   Leftover,
@@ -13,6 +13,7 @@ import {
 } from "./types";
 import { SEED_RECIPES } from "./seed";
 import { todayISO } from "./dates";
+import { cloudStorage } from "./cloudStorage";
 
 function uid(): string {
   return (
@@ -171,6 +172,10 @@ export const useStore = create<State>()(
     }),
     {
       name: "cooking-routine-store-v1",
+      storage: createJSONStorage(() => cloudStorage),
+      // AuthGate triggers rehydration after the user is signed in — the
+      // store has no localStorage to fall back on.
+      skipHydration: true,
       onRehydrateStorage: () => (state) => {
         if (state) state.hydrated = true;
       },
