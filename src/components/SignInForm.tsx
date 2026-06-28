@@ -41,7 +41,7 @@ export default function SignInForm() {
     e.preventDefault();
     const token = code.trim();
     if (token.length < 6) {
-      setErrorMsg("Enter the 6-digit code from your email.");
+      setErrorMsg("Enter the code from your email.");
       return;
     }
     setPhase("verifying");
@@ -105,7 +105,7 @@ export default function SignInForm() {
       ) : (
         <form onSubmit={onVerifyCode} className="card space-y-3 p-5">
           <p className="text-sm text-ink-soft">
-            We sent a 6-digit code to{" "}
+            We sent a sign-in code to{" "}
             <span className="font-medium text-ink">{email}</span>. Enter it
             below to finish signing in.
           </p>
@@ -119,9 +119,9 @@ export default function SignInForm() {
               inputMode="numeric"
               autoComplete="one-time-code"
               required
-              maxLength={6}
-              className="field readout text-center text-xl tracking-[0.4em]"
-              placeholder="••••••"
+              maxLength={8}
+              className="field readout text-center text-xl tracking-[0.35em]"
+              placeholder="••••••••"
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
               disabled={phase === "verifying"}
