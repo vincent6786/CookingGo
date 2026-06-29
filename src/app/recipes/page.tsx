@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Clock, ChefHat } from "lucide-react";
+import { Plus, Search, Clock, ChefHat, Globe } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { ClientGate } from "@/components/ClientGate";
 import { PageHeader, EmptyState } from "@/components/ui";
@@ -35,9 +35,19 @@ function Recipes() {
         eyebrow="Library"
         title="Recipes"
         action={
-          <Link href="/recipes/new" className="btn-amber !px-3">
-            <Plus size={18} /> New
-          </Link>
+          <div className="flex gap-1.5">
+            <Link
+              href="/recipes/import"
+              className="btn-ghost !px-3"
+              aria-label="Import from URL"
+            >
+              <Globe size={18} />
+              <span className="hidden sm:inline">Import</span>
+            </Link>
+            <Link href="/recipes/new" className="btn-amber !px-3">
+              <Plus size={18} /> New
+            </Link>
+          </div>
         }
       />
 
@@ -72,9 +82,14 @@ function Recipes() {
           title={q || tag ? "No matches" : "No recipes yet"}
           hint={q || tag ? "Try a different search or filter." : "Add your first recipe to start planning."}
           action={
-            <Link href="/recipes/new" className="btn-amber">
-              <Plus size={18} /> Add recipe
-            </Link>
+            <div className="flex gap-2">
+              <Link href="/recipes/new" className="btn-amber">
+                <Plus size={18} /> Add recipe
+              </Link>
+              <Link href="/recipes/import" className="btn-ghost">
+                <Globe size={18} /> Import
+              </Link>
+            </div>
           }
         />
       ) : (

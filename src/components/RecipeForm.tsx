@@ -24,28 +24,38 @@ function blankIngredient(): RecipeIngredient {
   return { id: uid(), name: "", quantity: 1, unit: "g", section: "Produce" };
 }
 
-export default function RecipeForm({ existing }: { existing?: Recipe }) {
+export default function RecipeForm({
+  existing,
+  defaults,
+}: {
+  existing?: Recipe;
+  defaults?: Partial<Omit<Recipe, "id" | "createdAt">>;
+}) {
   const router = useRouter();
   const addRecipe = useStore((s) => s.addRecipe);
   const updateRecipe = useStore((s) => s.updateRecipe);
 
-  const [name, setName] = useState(existing?.name ?? "");
-  const [emoji, setEmoji] = useState(existing?.emoji ?? "🍲");
-  const [mealType, setMealType] = useState<MealType>(existing?.mealType ?? "dinner");
-  const [servings, setServings] = useState(existing?.servings ?? 2);
-  const [prepMinutes, setPrep] = useState(existing?.prepMinutes ?? 10);
-  const [cookMinutes, setCook] = useState(existing?.cookMinutes ?? 20);
-  const [difficulty, setDifficulty] = useState<1 | 2 | 3>(existing?.difficulty ?? 1);
-  const [storageDays, setStorage] = useState(existing?.storageDays ?? 3);
-  const [freezerFriendly, setFreezer] = useState(existing?.freezerFriendly ?? false);
-  const [tags, setTags] = useState<RecipeTag[]>(existing?.tags ?? []);
+  // `existing` wins (edit mode); otherwise fall through to `defaults` (prefill
+  // for a new recipe — e.g. coming from URL import).
+  const seed = existing ?? defaults;
+
+  const [name, setName] = useState(seed?.name ?? "");
+  const [emoji, setEmoji] = useState(seed?.emoji ?? "🍲");
+  const [mealType, setMealType] = useState<MealType>(seed?.mealType ?? "dinner");
+  const [servings, setServings] = useState(seed?.servings ?? 2);
+  const [prepMinutes, setPrep] = useState(seed?.prepMinutes ?? 10);
+  const [cookMinutes, setCook] = useState(seed?.cookMinutes ?? 20);
+  const [difficulty, setDifficulty] = useState<1 | 2 | 3>(seed?.difficulty ?? 1);
+  const [storageDays, setStorage] = useState(seed?.storageDays ?? 3);
+  const [freezerFriendly, setFreezer] = useState(seed?.freezerFriendly ?? false);
+  const [tags, setTags] = useState<RecipeTag[]>(seed?.tags ?? []);
   const [ingredients, setIngredients] = useState<RecipeIngredient[]>(
-    existing?.ingredients?.length ? existing.ingredients : [blankIngredient()]
+    seed?.ingredients?.length ? seed.ingredients : [blankIngredient()]
   );
   const [steps, setSteps] = useState<string[]>(
-    existing?.steps?.length ? existing.steps : [""]
+    seed?.steps?.length ? seed.steps : [""]
   );
-  const [equipment, setEquipment] = useState((existing?.equipment ?? []).join(", "));
+  const [equipment, setEquipment] = useState((seed?.equipment ?? []).join(", "));
 
   const setIng = (id: string, patch: Partial<RecipeIngredient>) =>
     setIngredients((arr) => arr.map((i) => (i.id === id ? { ...i, ...patch } : i)));
